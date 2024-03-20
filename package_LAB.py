@@ -106,7 +106,7 @@ def PID_RT(SP, PV, Man, MVMan, MVFF, Kc, Ti, Td, alpha, Ts, MVMin, MVMax, MV, MV
             MVD.append(Tfd/(Tfd + Ts)*MVD[-1] + (Kc*Td/(Tfd + Ts))*(E[-1] - E[-2]))
 
     # Integrator Reset
-    if MAN[-1] == True:
+    if Man[-1] == True:
         if ManFF == True:
             MVI[-1] = MVMan[-1] - MVP[-1] - MVD[-1]
         else :
