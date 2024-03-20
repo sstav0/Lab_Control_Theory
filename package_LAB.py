@@ -24,7 +24,7 @@ def LL_RT(MV,Kp,TLead, TLag, Ts,PV,PVInit=0,method='EBD'):
     The appended value is obtained from a recurrent equation that depends on the discretisation method.
     """    
     
-    if (T != 0):
+    if (TLag != 0):
         K = Ts/TLag
         if len(PV) == 0:
             PV.append(PVInit)
