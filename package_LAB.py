@@ -120,3 +120,34 @@ def PID_RT(SP, PV, Man, MVMan, MVFF, Kc, Ti, Td, alpha, Ts, MVMin, MVMax, MV, MV
 
     # Resulting MV
     MV.append(MVP[-1] + MVI[-1] + MVD[-1] + MVFF[-1])
+    
+def IMCTuning(K, T1p, T2p, theta, gamma, model="SOPDT") :
+    """
+    IMC returns the tuning parameters for a PID controller based on the Internal Model Control (IMC) method.
+    
+    :K: Process gain
+    :T1p: First process time constant [s]
+    :T2p: Second process time constant [s]
+    :theta: Delay [s]
+    :gamma: Factor between closed-loop time constant and open-loop time constant `T_CLP = gamma * T_OLP`
+    :model: Process model (optional: default is 'SOPDT')
+        FOPDT: First Order Plus Dead Time
+        SOPDT: Second Order Plus Dead Time
+    
+    :returns: tuple with Kc, Ti, Td
+    """
+    
+    T_CLP = gamma * T1p
+    
+    if model == "SOPDT":
+        # SOPDT
+        Kc = (1/K)*(T1p+T2p)/(T_CLP+theta)
+        Ti = T1p + T2p
+        Td = (T1p * T2p)/(T1p + T2p)
+    else:
+        # FOPDT
+        Kc= (1/K)*(T1p + theta/2)/(T_CLP + theta/2)
+        Ti = T1p + theta/2
+        Td = (T1p * theta)/(2*T1p + theta)
+        
+    return Kc, Ti, Td
