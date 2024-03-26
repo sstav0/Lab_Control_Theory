@@ -198,22 +198,82 @@ def Margins(P: Process, C: Controller, omega, show=True) :
     s = 1j * omega
     
     # Process transfer function
-    Ps = 0
+    Ptheta = np.exp(-P.parameters['theta']*s)
+    PGain = P.parameters['Kp']*np.ones_like(Ptheta)
+    PLag1 = 1/(P.parameters['Tlag1']*s + 1)
+    PLag2 = 1/(P.parameters['Tlag2']*s + 1)
+    PLead1 = P.parameters['Tlead1']*s + 1
+    PLead2 = P.parameters['Tlead2']*s + 1
+    
+    Ps = np.multiply(Ptheta,PGain)
+    Ps = np.multiply(Ps,PLag1)
+    Ps = np.multiply(Ps,PLag2)
+    Ps = np.multiply(Ps,PLead1)
+    Ps = np.multiply(Ps,PLead2)
     
     # Controller transfer function
     Cs = C.parameters['Kc'] * (1 + 1/(C.parameters['Ti']*s) + C.parameters['Td']*s/(1 + C.parameters['Tfd']*s))
     
     # Loop transfer function
-    Ls = Ps * Cs
-    
+    Ls = np.multiply(Ps,Cs)
+
     # Gain margin
     GM = 0
+    ultimate_freq = 0
+    phase_crossing_idx = np.argmin(np.abs(np.angle(Ls, deg=True) - -180))
+    if phase_crossing_idx > 0:
+        ultimate_freq = omega[phase_crossing_idx]
+        GM = 20*np.log10(1 / np.abs(Ls[phase_crossing_idx]))
+        print(f"Gain margin GM = {GM:.2f} at {ultimate_freq:.2f} rad/s")
+    else:
+        print(">> Index for which arg(Ls) = -180° not found")
     
     # Phase margin
     PM = 0
+    crossover_freq = 0
+    gain_crossing_idx = np.argmin(np.abs(np.abs(Ls) - 1))
+    if gain_crossing_idx > 0:
+        crossover_freq = omega[gain_crossing_idx]
+        PM = 180 + np.angle(Ls[gain_crossing_idx], deg=True)
+        print(f"Phase margin PM = {PM:.2f} at {crossover_freq:.2f} rad/s")
+    else:
+        print(">> Index for which |Ls| = 1 not found")
+        
     
     if show == True:
-        # Bode plot
-        plt.figure()
+        fig, (ax_gain, ax_phase) = plt.subplots(2,1)
+        fig.set_figheight(10)
+        fig.set_figwidth(18)
+        
+        # Gain Bode plot
+        ax_gain.semilogx(omega,20*np.log10(np.abs(Ls)), label=r'$L(s)=P(s)C(s)$')
+        ax_gain.semilogx(omega,20*np.log10(np.abs(Ps)), ':',label=r'$P(s)$')
+        ax_gain.semilogx(omega,20*np.log10(np.abs(Cs)), ':',label=r'$C(s)$')
+        ax_gain.axhline(0, color='black', linestyle='--')
+        ax_gain.vlines(ultimate_freq, -GM, 0, color='red')
+        gain_min = np.min(20*np.log10(np.abs(Ls)/4))
+        gain_max = np.max(20*np.log10(np.abs(Ls)*5))
+        ax_gain.set_xlim([np.min(omega), np.max(omega)])
+        ax_gain.set_ylim([gain_min, gain_max])
+        ax_gain.set_ylabel('Amplitude' + '\n$|L(s)|$ [dB]')
+        ax_gain.set_title('Bode plot of L')
+        ax_gain.legend(loc='best')
+        ax_gain.grid()
+        
+        # Phase Bode plot
+        ax_phase.semilogx(omega, (180/np.pi)*np.unwrap(np.angle(Ls)),label=r'$L(s)=P(s)C(s)$')
+        ax_phase.semilogx(omega, (180/np.pi)*np.unwrap(np.angle(Ps)), ':',label=r'$P(s)$')
+        ax_phase.semilogx(omega, (180/np.pi)*np.unwrap(np.angle(Cs)), ':',label=r'$C(s)$')
+        ax_phase.axhline(-180, color='black', linestyle='--')
+        ax_phase.vlines(crossover_freq, -180, -180 + PM, color='blue')
+        ax_phase.set_xlim([np.min(omega), np.max(omega)])
+        ph_min = np.min((180/np.pi)*np.unwrap(np.angle(Ls))) - 10
+        ph_max = np.max((180/np.pi)*np.unwrap(np.angle(Ls))) + 10
+        ax_phase.set_ylim([np.max([ph_min, -300]), ph_max])
+        ax_phase.set_xlabel(r'Frequency $\omega$ [rad/s]')
+        ax_phase.set_ylabel('Phase' + '\n' + r'$\angle L(s)$ [°]')
+        ax_phase.legend(loc='best')
+        ax_phase.grid()
+
     else:
         return Ls, GM, PM
