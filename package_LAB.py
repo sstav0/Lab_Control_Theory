@@ -14,13 +14,13 @@ def LL_RT(MV, Kp, TLead, TLag, Ts, PV, PVInit=0, method='EBD'):
     :Ts: sampling period [s]
     :PV: output vector
     :PVInit: (optional: default value is 0)
-    :method: discretisation method (optional: default value is 'EBD')
+    :method: discretization method (optional: default value is 'EBD')
         EBD: Euler Backward difference
         EFD: Euler Forward difference
-        TRAP: Trapezoïdal method
+        TRAP: Trapezoidal method
     
     The function "FO_RT" appends a value to the output vector "PV".
-    The appended value is obtained from a recurrent equation that depends on the discretisation method.
+    The appended value is obtained from a recurrent equation that depends on the discretization method.
     """    
     
     if (TLag != 0):
@@ -67,10 +67,10 @@ def PID_RT(SP, PV, Man, MVMan, MVFF, Kc, Ti, Td, alpha, Ts, MVMin, MVMax, MV, MV
     
     :ManFF: Activating FeedForward in manual mode (optional: default False) [bool]
     :PVInit: Initial value for PV (optional: default 0) [int]
-    :methodI: Discretisation method for Integral action (optional: default 'EBD') [string]
+    :methodI: Discretization method for Integral action (optional: default 'EBD') [string]
         EBD : Euler Backward Difference
         TRAP : Trapezoids
-    :methodD: Discretisation method for Derivative action (optional: default 'EBD') [string]
+    :methodD: Discretization method for Derivative action (optional: default 'EBD') [string]
         EBD : Euler Backward Difference
         TRAP : Trapezoids
 
@@ -83,7 +83,7 @@ def PID_RT(SP, PV, Man, MVMan, MVFF, Kc, Ti, Td, alpha, Ts, MVMin, MVMax, MV, MV
     else: 
         E.append(SP[-1] - PV[-1])
     
-    # Proportionnal action
+    # Proportional action
     MVP.append(Kc*E[-1])
     
     # Integral action
