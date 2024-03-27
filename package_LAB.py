@@ -220,7 +220,7 @@ def Margins(P: Process, C: Controller, omega, show=True) :
     # Gain margin
     GM = 0
     ultimate_freq = 0
-    phase_crossing_idx = np.argmin(np.abs(np.angle(Ls, deg=True) - -180))
+    phase_crossing_idx = np.argmin(np.abs(np.angle(Ls, deg=True) - -180)) # Find the nearest point with an angle of -180°
     if phase_crossing_idx > 0:
         ultimate_freq = omega[phase_crossing_idx]
         GM = 20*np.log10(1 / np.abs(Ls[phase_crossing_idx]))
@@ -231,7 +231,7 @@ def Margins(P: Process, C: Controller, omega, show=True) :
     # Phase margin
     PM = 0
     crossover_freq = 0
-    gain_crossing_idx = np.argmin(np.abs(np.abs(Ls) - 1))
+    gain_crossing_idx = np.argmin(np.abs(np.abs(Ls) - 1)) # Find the nearest point with a gain of 1
     if gain_crossing_idx > 0:
         crossover_freq = omega[gain_crossing_idx]
         PM = 180 + np.angle(Ls[gain_crossing_idx], deg=True)
@@ -251,7 +251,7 @@ def Margins(P: Process, C: Controller, omega, show=True) :
         ax_gain.semilogx(omega,20*np.log10(np.abs(Cs)), ':',label=r'$C(s)$')
         ax_gain.axhline(0, color='black', linestyle='--')
         ax_gain.vlines(ultimate_freq, -GM, 0, color='red')
-        gain_min = np.min(20*np.log10(np.abs(Ls)/4))
+        gain_min = np.min(20*np.log10(np.abs(Ls)/5))
         gain_max = np.max(20*np.log10(np.abs(Ls)*5))
         ax_gain.set_xlim([np.min(omega), np.max(omega)])
         ax_gain.set_ylim([gain_min, gain_max])
@@ -269,7 +269,7 @@ def Margins(P: Process, C: Controller, omega, show=True) :
         ax_phase.set_xlim([np.min(omega), np.max(omega)])
         ph_min = np.min((180/np.pi)*np.unwrap(np.angle(Ls))) - 10
         ph_max = np.max((180/np.pi)*np.unwrap(np.angle(Ls))) + 10
-        ax_phase.set_ylim([np.max([ph_min, -300]), ph_max])
+        ax_phase.set_ylim([np.max([ph_min, -200]), ph_max])
         ax_phase.set_xlabel(r'Frequency $\omega$ [rad/s]')
         ax_phase.set_ylabel('Phase' + '\n' + r'$\angle L(s)$ [°]')
         ax_phase.legend(loc='best')
