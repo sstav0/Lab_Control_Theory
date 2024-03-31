@@ -1,4 +1,6 @@
 import numpy as np
+import sys
+import subprocess
 
 import matplotlib.pyplot as plt
 from IPython.display import display, clear_output
@@ -40,7 +42,6 @@ def LL_RT(MV, Kp, TLead, TLag, Ts, PV, PVInit=0, method='EBD'):
                 PV.append((1/(1+K))*PV[-1] + (K*Kp/(1+K))*MV[-1])
     else:
         PV.append(Kp*MV[-1])
-
 
 def PID_RT(SP, PV, Man, MVMan, MVFF, Kc, Ti, Td, alpha, Ts, MVMin, MVMax, MV, MVP, MVI, MVD, E, ManFF=False, PVInit=0, methodI='EBD', methodD='EBD') :
     """
@@ -277,3 +278,20 @@ def Margins(P: Process, C: Controller, omega, show=True) :
 
     else:
         return Ls, GM, PM
+    
+
+def install_and_import(package):
+    """Tries to import a package, if it fails, it installs the package using pip and tries to import it again.
+
+    Parameters
+    ----------
+    package : str
+        The name of the package to import.
+    """
+    try:
+        __import__(package)
+    except ImportError:
+        print(f"{package} not found, installing using pip...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+        # Try importing again after installing
+        __import__(package)
