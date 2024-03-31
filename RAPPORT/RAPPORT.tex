@@ -1,12 +1,13 @@
 \documentclass{article}
 \usepackage{graphicx} % Required for inserting images
 \usepackage[french]{babel}
+\usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{amsmath}
 \usepackage{txfonts}
 \usepackage{color}
 \usepackage{url}
 \usepackage{ulem}
-\usepackage{hyperref}
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{tgpagella}
@@ -23,7 +24,7 @@
 \usepackage[most]{tcolorbox}
 \tcbuselibrary{minted} % tcolorbox minted library, required to use the "minted" tcb listing engine (this library is not loaded by the option [most])
 \usepackage{minted} % Allows input of raw code, such as Python code
-\usepackage[colorlinks]{hyperref} % ALWAYS load this package LAST
+\usepackage[colorlinks=true, linkcolor=blue, citecolor=green, urlcolor=cyan]{hyperref}
 
 % Custom tcolorbox style for Python code (not the code or the box it appears in, just the options for the box)
 \tcbset{
@@ -106,7 +107,7 @@
 }
 
 \title{Rapport de Laboratoire - Control Theory}
-\author{Xavier Allaud}
+\author{Nicolas Juruet (21211) - Xavier Allaud(21151)}
 \date{March 2024}
 
 \begin{document}
@@ -115,17 +116,16 @@
 
 \section{Introduction}
 Le but de ce rapport est d'expliquer le processus de conception d'un régulateur PID avec une boucle de rétroaction en utilisant un kit TCLab. Pour se faire, il faudra identier la dyamique d'entrée/sortie du système afin de construire un modèle de celui-ci. Sur base de ce modèle, il sera possible d'implémenter un PID discret qu'il faudra ensuite optimiser puis tester en conditions réelles.
-
 \tableofcontents
 
 \newpage
 
 \section{Identification de la Dynamique du Processus}
 \subsection{Graphique}
-Application d'un step $X(s) = \frac{1}{s}$ lorsque le système se situe en régime établi pour analyser la ``step response'' $Y(s) = \frac{P(s)}{s}$.
+Application d'un step $X(s) = \frac{1}{s}$ lorsque le système se situe en régime établi pour analyser la ``step response'' $Y(s) = \frac{P(s)}{s}$iiiii.
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\textwidth]{Graphical_methods_Cleaned_data_Open_loop_experiment_on_MV_2024-03-18-16h11.png}
+    \includegraphics[width=0.9\textwidth]{../Plots/Graphical_methods_Cleaned_data_Open_loop_experiment_on_MV_2024-03-18-16h11.png}
     \caption{Graphique step response}
     \label{fig:Graph1}
 \end{figure}
