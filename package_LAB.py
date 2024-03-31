@@ -280,7 +280,8 @@ def Margins(P: Process, C: Controller, omega, show=True) :
     
 
 def install_and_import(package):
-    """Tries to import a package, if it fails, it installs the package using pip and tries to import it again.
+    """
+    Tries to import a package, if it fails, it installs the package using pip and tries to import it again.
 
     Parameters
     ----------
