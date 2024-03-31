@@ -107,30 +107,34 @@
 }
 
 \title{Rapport de Laboratoire - Control Theory}
-\author{Nicolas Juruet (21211) - Xavier Allaud(21151)}
+\author{Nicolas Jurquet (21211) - Xavier Allaud(21151)}
 \date{March 2024}
 
 \begin{document}
 
 \maketitle
 
+%---------- Introduction ----------%
 \section{Introduction}
 Le but de ce rapport est d'expliquer le processus de conception d'un régulateur PID avec une boucle de rétroaction en utilisant un kit TCLab. Pour se faire, il faudra identier la dyamique d'entrée/sortie du système afin de construire un modèle de celui-ci. Sur base de ce modèle, il sera possible d'implémenter un PID discret qu'il faudra ensuite optimiser puis tester en conditions réelles.
 \tableofcontents
 
 \newpage
 
-\section{Identification de la Dynamique du Processus}
-\subsection{Graphique}
-Application d'un step $X(s) = \frac{1}{s}$ lorsque le système se situe en régime établi pour analyser la ``step response'' $Y(s) = \frac{P(s)}{s}$iiiii.
+%---------- Identification de la Dynamique du Processus ----------%
+\section{Identification de la Dynamique}
+
+\subsection{Processus P(s)}
+
+Application d'un step $X(s) = \frac{1}{s}$ lorsque le système se situe en régime établi pour analyser la "step response" $Y(s) = \frac{P(s)}{s}$.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\textwidth]{../Plots/Graphical_methods_Cleaned_data_Open_loop_experiment_on_MV_2024-03-18-16h11.png}
-    \caption{Graphique step response}
-    \label{fig:Graph1}
+    \caption{Réponse à un step sur MV}
+    \label{fig:MV_step_response}
 \end{figure}
 \begin{enumerate}
-    \item Le graphique (\ref{fig:Graph1}) obtenu permet (presque) d'affirmer que le processus est un système du $1^{e}$ ordre avec un délai. L'allure de la ``step response" est donc $y(t) = K_p (1-e^{-t/T})u(t)$.
+    \item Le graphique (\ref{fig:MV_step_response}) obtenu permet (presque) d'affirmer que le processus est un système du $1^{e}$ ordre avec un délai. L'allure de la "step response" est donc $y(t) = K_p (1-e^{-t/T})u(t)$.
 
     \item Le but est maintenant d'obtenir les paramètres de la fonction de transfert du processus $P(s)$ ce qui permettra de prédire $Y(s)$ pour n'importe quel $X(s)$ puisque $Y(s) = P(s) \cdot X(s)$ ou $PV = P(s)\cdot MV$. 
     \\Pour se faire, on utilise une fonction de minimisation d'erreur : 
@@ -157,6 +161,53 @@ Application d'un step $X(s) = \frac{1}{s}$ lorsque le système se situe en régi
     \end{python*}
 \end{enumerate}
 
-    
+Le fichier \texttt{Identification.ipynb} permet de trouver les valeurs estimées de $K_P$, $T_1p$, $T_2p$ et $\theta_p$ qui vont par après nous servir à modéliser le Processus et la Perturbation de façon optimale, ainsi que les différentes méthodes d'approximations des modèles du $1^{e}$ et $2^{e}$ ordre.\\
+Pour notre réponse du Processus, nous obtenons les valeurs suivantes pour un modèle du $2^{e}$ ordre :
+\begin{align*}
+    K_P &= 0.308 \\
+    T_{1p} &= 183.819 \,s \\
+    T_{2p} &= 3.292 \cdot 10^{-12} \,s \\
+    \theta_p &= 20.015 \,s
+\end{align*}
+Et les valeurs suivantes pour un modèle du $1^{er}$ ordre :
+\begin{align*}
+    K_P &= 0.314 \\
+    T_{p} &= 206.264 \,s \\
+    \theta_p &= 12.999 \,s
+\end{align*}
+On remarque directement que $T_{2p}$ est négligeable par rapport à $T_{1p}$, et permet donc de confirmer que le processus agit comme un système du $1^{er}$ ordre avec délai :
+\begin{equation}
+    \hat{P}(s) = \frac{K_P\,e^{-\theta_p s}}{(T_{1p}s + 1)(T_{2p}s + 1)} \approx \frac{K_P\,e^{-\theta_p s}}{T_{1p}s + 1}
+\end{equation}
+
+%---------- Identification de la Dynamique de la Perturbation ----------%
+\subsection{Perturbation D(s)}
+
+Nous appliquons maintenant un step sur DV pour observer la réponse du système à une perturbation.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{../Plots/Graphical_methods_Cleaned_data_Open_loop_experiment_on_DV_2024-03-18-20h01.png}
+    \caption{Réponse à un step sur DV}
+    \label{fig:DV_step_response}
+\end{figure}
+
+Étant donné l'allure du graphe (\ref{fig:DV_step_response}), et en particulier le point d'inflexion aux alentours de 80 secondes, nous pouvons estimer que la perturbation se comporte comme un système du $2^{e}$ ordre avec délai de la forme :
+\begin{equation}
+    \hat{D}(s) = \frac{K_D\,e^{-\theta_d s}}{(T_{1d}s + 1)(T_{2d}s + 1)}
+\end{equation}
+En effet, nous obtenons grâce au fichier \texttt{Identification.ipynb}, les valeurs suivantes pour un modèle du $2^{e}$ ordre :
+\begin{align*}
+    K_D &= 0.295 \\
+    T_{1d} &= 182.255 \,s \\
+    T_{2d} &= 13.184 \,s \\
+    \theta_d &= 28.999 \,s
+\end{align*}
+Et les valeurs suivantes pour un modèle du $1^{er}$ ordre :
+\begin{align*}
+    K_D &= 0.296 \\
+    T_{d} &= 184.880 \,s \\
+    \theta_d &= 40.136 \,s
+\end{align*}
+Les valeures obtenues pour $T_{1d}$ et $T_{2d}$ nous permettent de confirmer que la perturbation est un système du $2^{e}$ ordre.
 
 \end{document}
