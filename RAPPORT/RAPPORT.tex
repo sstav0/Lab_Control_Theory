@@ -121,12 +121,15 @@ Le but de ce rapport est d'expliquer le processus de conception d'un régulateur
 
 \newpage
 
-%---------- Identification de la Dynamique du Processus ----------%
+%---------- Identification de la Dynamique ----------%
 \section{Identification de la Dynamique}
+Pour que ce qui va être présenté par la suite ait du sens, il est nécéssaire de savoir dans quelles conditions nous travaillons.\\
+Nos réponses sont basées sur un point de fonctionnement de $MV_0 = 50\%$, $DV_0 = 50\%$ et une sortie $PV_0 = 49.3^{\circ}$C. 
+C'est à dire que la température obtenue sur $PV$ lorsqu'une puissance de chauffe de 50\% est appliquée sur les 2 chauffages est de 49.3°C en régime établi.
 
 \subsection{Processus P(s)}
 
-Application d'un step $X(s) = \frac{1}{s}$ lorsque le système se situe en régime établi pour analyser la "step response" $Y(s) = \frac{P(s)}{s}$.
+Appliquons un step $X(s) = \frac{1}{s}$ autour du point de fonctionnement (de 30\% à 70\%) lorsque le système se situe en régime établi pour analyser la "step response" $Y(s) = \frac{P(s)}{s}$.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\textwidth]{../Plots/Graphical_methods_Cleaned_data_Open_loop_experiment_on_MV_2024-03-18-16h11.png}
@@ -180,11 +183,95 @@ On remarque directement que $T_{2p}$ est négligeable par rapport à $T_{1p}$, e
     \hat{P}(s) = \frac{K_P\,e^{-\theta_p s}}{(T_{1p}s + 1)(T_{2p}s + 1)} \approx \frac{K_P\,e^{-\theta_p s}}{T_{1p}s + 1}
 \end{equation}
 
+\subsubsection{Approximation graphique du modèle pour MV}
+
+Il est également possible de déterminer la dynamique du Processus graphiquement sur base de la Figure \ref{fig:MV_step_response}.
+Nous obtenons les paramètres $K_P$, $T_u$, $T_g$, $t_1$, $t_2$ et $a$ dont la détermination est expliquée en Annexe \ref{appendix:MV_graphical_method} :
+\begin{align*}
+    K_P &= 0.305 \\
+    T_u &= 17 \,s \\
+    T_g &= 211 \,s \\
+    t_1 &= 95 \,s \\
+    t_2 &= 133 \,s \\
+    a &= 0.1
+\end{align*}
+Ces paramètres servirons à utiliser les méthodes classiques d'approximation du modèle, à savoir le modèle de \textbf{Broida}, \textbf{Van Der Grinten} et \textbf{Strejc}.
+
+\subsubsection{Modèle de Broida (FOPDT)}
+Ce modèle consiste à approximer le Processus par un système du $1^{er}$ ordre avec délai de la forme :
+\begin{equation*}
+    P_B(s) = \frac{K_P\,e^{-\theta s}}{T s + 1}
+\end{equation*}
+Le \underline{$1^{er}$ modèle} de Broida est obtenu en définissant la constante de temps $T$ et le délai $\theta$ comme suit :
+\begin{center}
+    $T = T_g = 211\,s$ \, et \, $\theta = T_u = 17\,s$
+\end{center}
+Le \underline{$2^{e}$ modèle} de Broida est obtenu en définissant la constante de temps $T$ et le délai $\theta$ comme suit :
+\begin{center}
+    $T = 5.5\,(t_2 - t_1) = 209\,s$ \, et \, $\theta = 2.8\,t_1 - 1.8\,t_2 = 26.60\,s$
+\end{center}
+
+\subsubsection{Modèle de van der Grinten (SOPDT)}
+Ce modèle consiste à approximer le Processus par un système du $2^{e}$ ordre avec délai de la forme :
+\begin{equation*}
+    P_{vdG}(s) = \frac{K_P\,e^{-\theta s}}{(T_1 s + 1)(T_2 s + 1)}
+\end{equation*}
+$T_1$, $T_2$ et $\theta$ sont obtenus comme suit :
+\begin{align*}
+        T_1 &= T_g\,\frac{3ae - 1}{1 + ae} = -30.61\,s\\
+        T_2 &= T_g\,\frac{1 - ae}{1 + ae} = 120.81\,s\\
+        \theta &= T_u - \frac{T_1T_2}{T_1 + 3T_2} = 28.15\,s
+\end{align*}
+Nous constatons que la $1^{e}$ constante de temps $T_1$ est négative, ce qui est physiquement impossible! 
+Il n'est cependant pas étonnant d'obtenir ce résultat étant donné que le Processus est un système du $1^{er}$ ordre avec délai.
+Un modèle du $2^{e}$ ordre tel que van der Grinten n'est donc pas adapté pour approximer notre Processus et ne sera donc pas représenté par après.
+
+\subsubsection{Modèle de Strejc}
+Ce modèle consiste à approximer le Processus par un système du $n^{e}$ ordre avec des pôles et constantes de temps identiques de la forme :
+\begin{equation*}
+    P_S(s) = \frac{K_P\,e^{-\theta s}}{(T s + 1)^n}
+\end{equation*}
+L'ordre $n$ est obtenu avec la Table \ref{tab:Strejc_order} :
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|c|c|c|} 
+        \hline
+        Order $n$ & $T_{u_{th}}/T_g$ & $T_g/T$ \\
+        \hline
+         & $a_n$ & $b_n$ \\
+        \hline
+        1 & 0.00 & 1.00 \\
+        \hline
+        2 & 0.10 & 2.72 \\
+        \hline
+        3 & 0.22 & 3.69 \\
+        \hline
+        4 & 0.32 & 4.46 \\
+        \hline
+        5 & 0.41 & 5.12 \\
+        \hline
+        6 & 0.49 & 5.70 \\
+        \hline
+        7 & 0.57 & 6.23 \\
+        \hline
+    \end{tabular}
+    \caption{Ordre $n$ du modèle de Strejc en fonction de $a_n$ et $b_n$}
+    \label{tab:Strejc_order}
+\end{table}
+Nous avons que $T_u/T_g = 0.08$ et donc ce situe à $a_1 \leq 0.08 < a_2$, ce qui nous donne un ordre $n = 1$. $a_n$ vaut alors 0.00 et $b_n$ vaut 1.00.
+La constante de temps $T$ et le délai $\theta$ vont être au final trouvés directement avec les valeurs de $T_g$ et $T_u$ comme le modèle de Broida :
+\begin{align*}
+    T = \frac{T_g}{b_n} = T_g = 211\,s\\
+    \theta = T_u - a_n T_g = T_u = 17\,s
+\end{align*}
+
+\subsubsection{Comparaison des modèles d'approximation}
+
 %---------- Identification de la Dynamique de la Perturbation ----------%
 \subsection{Perturbation D(s)}
 
 Nous appliquons maintenant un step sur DV pour observer la réponse du système à une perturbation.
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.9\textwidth]{../Plots/Graphical_methods_Cleaned_data_Open_loop_experiment_on_DV_2024-03-18-20h01.png}
     \caption{Réponse à un step sur DV}
@@ -209,5 +296,16 @@ Et les valeurs suivantes pour un modèle du $1^{er}$ ordre :
     \theta_d &= 40.136 \,s
 \end{align*}
 Les valeures obtenues pour $T_{1d}$ et $T_{2d}$ nous permettent de confirmer que la perturbation est un système du $2^{e}$ ordre.
+
+%---------- Annexes ----------%
+\appendix
+\newpage
+\section{Méthode graphique pour l'obtention des paramètres d'approximation}
+\label{appendix:MV_graphical_method}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{../Data/Scanned.pdf}
+    \caption{Obtention des paramètres d'approximation pour un step sur MV}
+\end{figure}
 
 \end{document}
