@@ -22,7 +22,7 @@ def LL_RT(MV, Kp, TLead, TLag, Ts, PV, PVInit=0, method='EBD'):
     :PV: output vector
     :PVInit: (optional: default value is 0)
     :method: discretization method (optional: default value is 'EBD')
-        EBD: Euler Backward difference
+        EBD: Euler Backward di fference
         EFD: Euler Forward difference
         TRAP: Trapezoidal method
     
@@ -38,13 +38,17 @@ def LL_RT(MV, Kp, TLead, TLag, Ts, PV, PVInit=0, method='EBD'):
             if method == 'EBD':
                 PV.append((1/(1+K))*PV[-1] + (K*Kp/(1+K))*((1+TLead/Ts)*MV[-1] - (TLead/Ts)*MV[-2]))
             elif method == 'EFD':
-                PV.append((1-K)*PV[-1] + K*Kp((TLead/Ts)*MV[-1] + (1- TLead/Ts)*MV[-2]))
+                PV.append((1-K)*PV[-1] + K*Kp*((TLead/Ts)*MV[-1] + (1- TLead/Ts)*MV[-2]))
             # elif method == 'TRAP':
             #     PV.append((1/(2*T+Ts))*((2*T-Ts)*PV[-1] + Kp*Ts*(MV[-1] + MV[-2])))            
             else:
                 PV.append((1/(1+K))*PV[-1] + (K*Kp/(1+K))*MV[-1])
     else:
-        PV.append(Kp*MV[-1])
+        if len(PV) == 0:
+            PV.append(PVInit)
+        else :
+            #PV.append(Kp*MV[-1])    
+            PV.append(1/Ts*(MV[-1]*(Kp*TLead*Ts)-TLead*MV[-2])) #EBD method
 
 #----------------------------------#
 
@@ -407,7 +411,7 @@ class ExperimentControl :
         self.fig.add_trace(go.Scatter(name="MVMan"), row=1, col=1)
         self.fig.add_trace(go.Scatter(name="DV"), row=4, col=1)
         # Update layout
-        self.fig['layout'].update(height=800, width=800)
+        self.fig['layout'].update(height=800, width=1000)
         self.fig['layout']['xaxis1'].update(title='Time (s)')
         self.fig['layout']['yaxis1'].update(title='(°C)')
         self.fig['layout']['xaxis2'].update(title='Time (s)')
