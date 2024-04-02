@@ -44,11 +44,7 @@ def LL_RT(MV, Kp, TLead, TLag, Ts, PV, PVInit=0, method='EBD'):
             else:
                 PV.append((1/(1+K))*PV[-1] + (K*Kp/(1+K))*MV[-1])
     else:
-        if len(PV) == 0:
-            PV.append(PVInit)
-        else :
-            #PV.append(Kp*MV[-1])    
-            PV.append(1/Ts*(MV[-1]*(Kp*TLead*Ts)-TLead*MV[-2])) #EBD method
+        PV.append(Kp*MV[-1])    
 
 #----------------------------------#
 
