@@ -216,7 +216,7 @@ consiste à appliquer le gain (\ref{eq:2}) et le premier Lead-Lag.
 \\Ajouter un signe négatif au gain puis additionner le $MV_{FF}$ au $MV_{FB}$ ou laisser le gain positif et soustraire $MV_{FF}$ au $MV_{FB}$ est sans conséquences sur le système.
 \\Le premier Lead-Lag dont $T_{Lead} = T_{1P}$ et $T_{Lag} = T_{1D}$ couplé au gain et au délai permet d'obtenir la fonction de transfert : 
 \[K_{FF}\, \frac{T_{1P}s + 1}{T_{1D}s + 1} \, e^{\theta_{FF}}\]
-Pour se faire, on utilise la fonction \texttt{LL\_RT} sur le signal $DV$ retardé et centré (\texttt{MV\_Delay}) via : 
+Pour se faire, on utilise la fonction \texttt{LL\_RT} sur le signal $DV$ retardé et centré (\texttt{MVFF\_Delay}) via : 
 \begin{python*}
 	LL_RT(self.MVFF_Delay, 
 		-self.Kp_ODV_SOPDT/self.Kp_OMV_SOPDT, # gain
