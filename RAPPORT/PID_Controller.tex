@@ -172,9 +172,10 @@ avant que ces dernières n'affectent le système.
 		\fill[fill=yellow!80!] (0,0) circle [radius=0.25cm];
 		\node at (0,0) {1};
 	\end{tikzpicture} Premièrement, la valeur manipulée en sortie du PID, $MV_{FB}$, est ajustée par une valeur $MV_{FF}$, calculée pour compenser directement la perturbation :
-	\begin{equation} \label{eq:1}
-		MV_{FF} = K_{FF}\cdot\frac{(T_{1P}s + 1)(T_{2P}s + 1)}{(T_{1D}s + 1)(T_{2D}s + 1)}\cdot e^{-\theta_{FF}}\,DV = \frac{\hat{D}(s)}{\hat{P}(s)}\,DV
-	\end{equation}
+    \begin{align}\label{eq:1}
+        MV_{FF} &= K_{FF}\cdot\frac{(T_{1P}s + 1)(T_{2P}s + 1)}{(T_{1D}s + 1)(T_{2D}s + 1)}\cdot e^{-\theta_{FF}}\,DV\\ 
+        \Rightarrow MV_{FF} &= \frac{\hat{D}(s)}{\hat{P}(s)}\,DV
+    \end{align}
 	où : 
 	\begin{equation}\label{eq:2}
 		K_{FF} = \frac{K_D}{K_P},
@@ -188,7 +189,7 @@ avant que ces dernières n'affectent le système.
 		\node at (0,0) {2};
 	\end{tikzpicture}Ensuite, après la sortie du n\oe{}ud $MV = MV_{FB} - MV_{FF}$, on obtient : 
 	\begin{equation}\label{eq:4}
-		P(s)\cdot MV \approx P(s)\cdot MV_{FB} - \hat{D}(s)
+		P(s)\cdot MV \approx P(s)\cdot MV_{FB} - \hat{D}(s)\cdot DV
 	\end{equation}
 	\item
 	\begin{tikzpicture}
@@ -196,7 +197,7 @@ avant que ces dernières n'affectent le système.
 		\node at (0,0) {3};
 	\end{tikzpicture} Pour enfin arriver au n\oe{}ud final où l'on additionne la dynamique de la perturbation $D(s)$ à celle du processus : 
 	\begin{equation}\label{eq:5}
-		P(s)\cdot MV_{FB} - \hat{D}(s) + D(s) \approx P(s)\cdot MV_{FB} = PV
+		P(s)\cdot MV_{FB} - \hat{D}(s)\cdot DV + D(s)\cdot DV \approx P(s)\cdot MV_{FB} = PV
 	\end{equation}
 \end{itemize}
 \subsubsection{Délai}
