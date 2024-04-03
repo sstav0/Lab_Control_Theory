@@ -314,7 +314,7 @@ install_and_import('plotly')
 install_and_import('ipywidgets')
 from plotly.subplots import make_subplots
 import plotly.graph_objs as go
-from ipywidgets import interactive, VBox, IntRangeSlider, IntSlider, Checkbox, FloatSlider, Label, Layout, Button
+from ipywidgets import interactive, VBox, IntRangeSlider, IntSlider, Checkbox, FloatSlider, Label, Layout, Button, FloatRangeSlider
 
 class ExperimentControl : 
     """
@@ -395,7 +395,7 @@ class ExperimentControl :
         self.should_continue = True
     
     def initialize(self):
-        self.fig = go.FigureWidget(make_subplots(rows=4, cols=1, specs = [[{}], [{}], [{}], [{}]], vertical_spacing = 0.15, row_heights=[0.1, 0.4, 0.4, 0.1], subplot_titles=("Manual Mode", "MV and Components", "PV, SP and E", "Perturbation DV")))
+        self.fig = go.FigureWidget(make_subplots(rows=4, cols=1, specs = [[{}], [{}], [{}], [{}]], vertical_spacing = 0.15, row_heights=[0.07, 0.43, 0.43, 0.07], subplot_titles=("Manual Mode", "MV and Components", "PV, SP and E", "Perturbation DV")))
         self.fig.add_trace(go.Scatter(name="SP"), row=3, col=1)
         self.fig.add_trace(go.Scatter(name="PV"), row=3, col=1)
         self.fig.add_trace(go.Scatter(name="E", line=dict(dash='dash')), row=3, col=1)
@@ -407,7 +407,7 @@ class ExperimentControl :
         self.fig.add_trace(go.Scatter(name="MVMan"), row=1, col=1)
         self.fig.add_trace(go.Scatter(name="DV"), row=4, col=1)
         # Update layout
-        self.fig['layout'].update(height=800, width=1200)
+        self.fig['layout'].update(height=1400, width=1200)
         self.fig['layout']['xaxis1'].update(title='Time (s)')
         self.fig['layout']['yaxis1'].update(title='(°C)')
         self.fig['layout']['xaxis2'].update(title='Time (s)')
@@ -664,7 +664,7 @@ class ExperimentControl :
         self.manualControlValueSlider = IntRangeSlider(min=0, max=100, step=1, value=[self.MV0+15, self.MV0+15], description="Manual Control Value", style=self.slider_style, layout=self.slider_layout)
         self.perturbationValueSlider = IntRangeSlider(min=0, max=100, step=1, value=[self.DV0, self.DV0+10], description="Perturbation Value", style=self.slider_style, layout=self.slider_layout)
         self.perturbationTimeIntervalSlider = IntRangeSlider(min=0, max=self.TSim, step=10, value=[0, 1600], description="Perturbation Time Interval", style=self.slider_style, layout=self.slider_layout)
-        self.setPointValueSlider = IntRangeSlider(min=0, max=100, step=1, value=[self.PV0+5, self.PV0+10], description="Set Point Value", style=self.slider_style, layout=self.slider_layout)
+        self.setPointValueSlider = FloatRangeSlider(min=0, max=100, step=0.1, value=[self.PV0+5, self.PV0+10], description="Set Point Value", style=self.slider_style, layout=self.slider_layout)
         self.setPointTimeIntervalSlider = IntRangeSlider(min=0, max=self.TSim, step=10, value=[0, 1000], description="Set Point Time Interval", style=self.slider_style, layout=self.slider_layout)
         self.gammaAdjustmentSlider = FloatSlider(min=0.2, max=0.9, step=0.02, value=0.7, description="Gamma Adjustment", style=self.slider_style, layout=self.slider_layout)
         self.alphaAdjustmentSlider = FloatSlider(min=0.2, max=1.5, step=0.02, value=1, description="Alpha Adjustment", style=self.slider_style, layout=self.slider_layout)

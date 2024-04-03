@@ -136,7 +136,7 @@ avant que ces dernières n'affectent le système.
 	\end{equation}
 	où : 
 	\begin{equation}\label{eq:2}
-		K_{FF} = \frac{K_D}{K_P}
+		K_{FF} = \frac{K_D}{K_P},
 	\end{equation}
 	\begin{equation}\label{eq:3}
 		\theta_{FF} = |\theta_D - \theta_P|
@@ -186,7 +186,7 @@ Pour se faire, on utilise la fonction \texttt{LL\_RT} sur le signal $DV$ retard�
 \end{python*}
 On applique ensuite un second Lead-Lag afin d'obtenir la fonction de transfert complète (\ref{eq:1}) dont la
 constant $T_{Lead} = T_{2P}$ et $T_{Lag} = T_{2D}$.
-\\Dans le cas où le FeedForward est désactivé, on applique un gain de 0 au second Lead-Lag donc $MV_{FF} = 0$ : 
+\\Dans le cas où le FeedForward est désactivé, on applique un gain nul au second Lead-Lag donc $MV_{FF} = 0$ : 
 \begin{python*}
 	if self.FF == True:
 		LL_RT(self.MVFF_LL1, 
