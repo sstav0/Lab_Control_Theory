@@ -407,7 +407,7 @@ class ExperimentControl :
         self.fig.add_trace(go.Scatter(name="MVMan"), row=1, col=1)
         self.fig.add_trace(go.Scatter(name="DV"), row=4, col=1)
         # Update layout
-        self.fig['layout'].update(height=800, width=1000)
+        self.fig['layout'].update(height=800, width=1200)
         self.fig['layout']['xaxis1'].update(title='Time (s)')
         self.fig['layout']['yaxis1'].update(title='(°C)')
         self.fig['layout']['xaxis2'].update(title='Time (s)')
@@ -485,7 +485,7 @@ class ExperimentControl :
                     lab.Q2(self.DV[-1])
                 
                 # FeedForward
-                Delay_RT(self.DV - self.DV0*np.ones_like(self.DV), max(self.theta_ODV_SOPDT-self.theta_OMV_SOPDT, 0), self.Ts, self.MVFF_Delay)
+                Delay_RT(self.DV - self.DV0*np.ones_like(self.DV), max(self.theta_ODV_SOPDT-self.theta_OMV_SOPDT, 0), self.Ts, self.MVFF_Delay) 
                 LL_RT(self.MVFF_Delay, -self.Kp_ODV_SOPDT/self.Kp_OMV_SOPDT, self.T1_OMV_SOPDT, self.T1_ODV_SOPDT, self.Ts, self.MVFF_LL1)
                 if self.FF == True:
                     LL_RT(self.MVFF_LL1, 1, self.T2_OMV_SOPDT, self.T2_ODV_SOPDT, self.Ts, self.MVFF)
@@ -626,7 +626,6 @@ class ExperimentControl :
     
     #TCLab checkbox update function 
     def Update_slider_on_tclab_change(self, change):
-        print("ok")
         self.TCLabStatus = change.new
         if change['new']:  # If TCLAB is now True
             self.simulationTimePerLoopSlider.min = 0.5
@@ -667,8 +666,8 @@ class ExperimentControl :
         self.perturbationTimeIntervalSlider = IntRangeSlider(min=0, max=self.TSim, step=10, value=[0, 1600], description="Perturbation Time Interval", style=self.slider_style, layout=self.slider_layout)
         self.setPointValueSlider = IntRangeSlider(min=0, max=100, step=1, value=[self.PV0+5, self.PV0+10], description="Set Point Value", style=self.slider_style, layout=self.slider_layout)
         self.setPointTimeIntervalSlider = IntRangeSlider(min=0, max=self.TSim, step=10, value=[0, 1000], description="Set Point Time Interval", style=self.slider_style, layout=self.slider_layout)
-        self.gammaAdjustmentSlider = FloatSlider(min=0.2, max=0.9, step=0.02, value=0.5, description="Gamma Adjustment", style=self.slider_style, layout=self.slider_layout)
-        self.alphaAdjustmentSlider = FloatSlider(min=0.2, max=0.9, step=0.02, value=0.7, description="Alpha Adjustment", style=self.slider_style, layout=self.slider_layout)
+        self.gammaAdjustmentSlider = FloatSlider(min=0.2, max=0.9, step=0.02, value=0.7, description="Gamma Adjustment", style=self.slider_style, layout=self.slider_layout)
+        self.alphaAdjustmentSlider = FloatSlider(min=0.2, max=1.5, step=0.02, value=1, description="Alpha Adjustment", style=self.slider_style, layout=self.slider_layout)
         
         # Create the slider with a conditional minimum value
         self.simulationTimePerLoopSlider = FloatSlider(
