@@ -10,7 +10,7 @@ Pour rappel, un régulateur PID est composé de trois termes:
     \item Le terme dérivé $D$ qui est proportionnel à la dérivée de l'erreur et vise à corriger anticipativement l'erreur future.
 \end{itemize}
 La sortie du régulateur est alors donnée par :
-\begin{equation}
+\begin{equation}\label{eq:PID}
     MV = K_C \, \left( 1 + \frac{1}{T_I s} + \frac{T_D s}{\alpha T_D s + 1}\right) \, E
 \end{equation}
 
@@ -48,7 +48,7 @@ La figure \ref{fig:Step_Response_PID} représente cette réponse.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{../Plots/PID/PID_Response_error_step.png}
-    \caption{Réponse indicielle du PID à un step sur E}
+    \caption{Réponse indicielle du PID à un step sur E ($K_C = 1.9$, $T_D = 6$, $T_I = 24$, $\alpha = 0.4$)}
     \label{fig:Step_Response_PID}
 \end{figure}
 Premièrement, nous voyons tout au long du graphique que $MV$ est la somme de ces actions $MV = MV_P + MV_I + MV_D + MV_{FF}$.
@@ -82,6 +82,18 @@ Si $MV$ ne sature pas, cette perturbation sera directement ajoutée à la sortie
     \caption{Influence de $K_C$ sur la réponse indicielle du PID}
     \label{fig:Kc_Influence_PID}
 \end{figure}
+Le gain du régulateur $K_C$ est un gain, donc un multiplicateur agissant sur toutes les actions comme le montre l'équation \eqref{eq:PID}.
+On voit sur la Figure \ref{fig:Kc_Influence_PID} que pour $K_C = 1$, tout est atténué et nous atteignons même pas la saturation.
+Une perturbation en fin de simulation est alors ajoutée à $MV$ et non enlevée à $MV_I$ pour conserver $MV_{MAX}$ sur $MV$.
+
+Lorsque l'on augmente $K_C$, tout est amplifié et plus aggressif. On le voit directement avec l'atteinte rapide de la saturation.
+Un gain trop élevé peut poser problème puisque le pic initial de l'action dérivée est directement proportionnel à $K_C$.
+Le graphe (b) montre même une saturation de ce pic obligeant l'action intégrale $MV_I$ à passer en négatif.\\
+Nous pouvons également faire le lien avec le coefficient $\gamma$. Celui-ci agit directement sur le gain sortant de l'optimisation IMC via la relation de la ligne I du tableau.
+\begin{equation*}
+    K_C = \frac{1}{K_P} \, \frac{T_{1p} + T_{2p}}{\gamma \, T_{1p} + \theta}
+\end{equation*}
+Il est clair que pour un processus et délai fixe, un grand $K_C$ induit un petit $\gamma$ et donc un caractère plus aggressif du régulateur.
 
 \subsubsection{Influence de \texorpdfstring{$T_D$}{Td} et \texorpdfstring{$T_I$}{Ti}}
 \begin{figure}[H]
@@ -97,6 +109,28 @@ Si $MV$ ne sature pas, cette perturbation sera directement ajoutée à la sortie
     \caption{Influence de $T_D$ et $T_I$ sur la réponse indicielle du PID}
     \label{fig:Td_Influence_PID}
 \end{figure}
+La constante de temps dérivée agit sur la pente de la tangente initialeet donc aussi sur le temps de montée de l'action dérivée.
+La constante de temps intégrale agit sur la pente de l'action intégrale.
+Étant donné que l'on respecte généralement $\frac{T_D}{T_I} < 0.25$, nous avons choisi de limiter les constantes par $T_I = \frac{T_D}{0.25}$.
+
+Nous constatons effectivement que l'action dérivée atteint son régime établi bien plus rapidement lorsque $T_D = 2\,s$ que lorsque $T_D = 30\,s$.
+Il y a également une différence notable quant à la hauteur du pic initial de l'action dérivée. Elle est représentée par :
+\begin{equation*}
+    MV_D = K_C \, E \, \frac{T_D s}{\alpha T_D s + 1}
+\end{equation*}
+Travaillant à une fréquence suffisement grande, lorsque 1 est non-négligeable par rapport à $\alpha T_D$, le pic est influencé par $T_D$.
+Arrivé à une valeur de $T_D$ suffisement grande, le 1 devient négligeable, et $T_D s$ peut se simplifier résultant en un pic qui tends vers :
+\begin{equation*}
+    MV_D = \frac{K_C \, E}{\alpha} = \frac{1.9 \cdot 10\%}{0.4} = 47.5\%
+\end{equation*}
+En effet, le graphe (b) montre déjà un pic de 45.6\% pour $T_D = 30\,s$ rendant celui-ci presque indépentant à une augmentation de $T_D$.
+
+La Figure \ref{fig:Td_Influence_PID} montre également l'impact de $T_I$ sur la pente de l'action intégrale.
+Cette action intégrale est inversemment proportionnelle à $T_I$.
+\begin{equation*}
+    MV_I = \frac{K_C \, E}{T_I s}
+\end{equation*}
+L'accumulation de l'erreur aura donc une plus grande valeur pour une constante $T_I$ plus faible, résultant en une variation plus grande de $MV_I$, en d'autres termes, une pente plus élevée.
 
 \subsubsection{Influence de \texorpdfstring{$\alpha$}{alpha}}
 \begin{figure}[H]
@@ -112,6 +146,13 @@ Si $MV$ ne sature pas, cette perturbation sera directement ajoutée à la sortie
     \caption{Influence de $\alpha$ sur la réponse indicielle du PID}
     \label{fig:Alpha_Influence_PID}
 \end{figure}
+Le coefficient $\alpha$ est tout bonnement ce qui va permettre de limiter le gain en hautes fréquences, donc en somme, le pic initial sur l'action dérivée.
+Le dérivateur est enfait $MV_D = T_D s$ qui est impropre, puisqu'à hautes fréquences, $s$ tend vers l'infini. Un filtre du $1^{er}$ ordre est alors appliqué avec un ratio de la constante de temps $T_D$.
+\begin{align*}
+    &MV_D = K_C \, E \, (T_D s)\\
+    \Longrightarrow \quad &MV_D = K_C \, E \, \frac{T_D s}{\alpha T_D s + 1} \, \longrightarrow \, \frac{K_C \, E}{\alpha}
+\end{align*}
+Nous voyons sur la Figure \ref{fig:Alpha_Influence_PID} que le pic est effectivement plus grand pour un $\alpha$ plus petit, et vice-versa.
 
 \subsection{FeedForward}
 
