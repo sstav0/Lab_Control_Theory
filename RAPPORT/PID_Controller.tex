@@ -21,6 +21,8 @@ Dans le cadre du laboratoire, le régulateur utilise également le \textbf{Reset
     $MV_I = MV_{MAX} - MV_P - MV_D - MV_{FF}$
 \end{center}
 
+Afin de pouvoir implémenter le régulateur PID, toutes les formules ont évidemment été discrétisées, et ce pour deux méthodes : Euler Backwards Difference (EBD) et Trapezoïdes (TRAP).
+
 \subsection{Optimisation par la méthode IMC}
 
 Il est important de choisir les paramètres $K_C$, $T_I$ et $T_D$ de façon à implémenter le bon régulateur pour notre processus.
