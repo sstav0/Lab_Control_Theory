@@ -33,7 +33,7 @@ tous les cas de figure :
 		FF = False # Pas de FeedForward
 		ManFF = False 
 	\end{python*}
-	\item Le $4^{ème}$ scénario permet de compléter le scnéario précédant en testant le fonctionnement du régulateur en boucle fermée FeedForward en observant sa réponse à un step
+	\item Le $4^{ème}$ scénario permet de compléter le scnéario précédant en testant le fonctionnement du régulateur en boucle fermée avec FeedForward en observant sa réponse à un step
 	de $-10\%$ sur $SP$ puis à un step de $10\%$ sur $DV$.
 	\begin{python*}
 		SPPath = {0: PV0 + 5, 1000: PV0 - 5} #Step de -10% après 1000 secondes
@@ -63,8 +63,8 @@ On peut observer que le $PV$ n'a pas atteint la valeur de consigne ($SP$) avant 
 la valeur du $PV$ à $t = 0s$ est de $\sim 18\degree C$ tandis que pour la simulation, il est de $\sim 34\degree C$. Néanmoins, une fois le step de $10\%$ sur $DV$ effectué,
 la valeur du $PV$ converge jusqu'à la valeur de consigne et la dépasse à $t = 1500s$ ce qui correspond à un retard par rapport à la simulation $\sim \Delta t = 75s$. 
 \\Une autre observation importante concerne la forme de la courbe $PV$ qui suggère un comportement typique d'un système du second ordre. Cependant, l'analyse des dynamiques du système 
-lors du $1^{er}$ laboratoire avait révélé une seconde constante de temps très faible, $T_2P \sim 10^{-12}$. $T_{2P}$ étant négligeable, nous avions conclu que notre système se comportait
-plutôt comme un système du premiere ordre en réponse à un changement sur $MV$. Selon nous, une des causes de ce changement de forme de courbe serait la température plus basse de la pièce qui affecterait 
+lors du $1^{er}$ laboratoire avait révélé une seconde constante de temps très faible, $T_{2p} \sim 10^{-12}$. $T_{2p}$ étant négligeable, nous avions conclu que notre système se comportait
+plutôt comme un système du premier ordre en réponse à un changement sur $MV$. Selon nous, une des causes de ce changement de forme de courbe serait la température plus basse de la pièce qui affecterait 
 l'inertie thermique du capteur de température. L'humidité de la pièce pourrait aussi être facteur puisque celle-ci affecte la conductivité thermique de l'air 
 ambiant et donc pourrait aussi impacter l'inertie thermique du capteur.
 
@@ -83,9 +83,9 @@ ambiant et donc pourrait aussi impacter l'inertie thermique du capteur.
 	\label{fig:sim_scenario2}
 \end{figure}
 
-Dans ce scénario, tout comme dans le précédent(\ref{fig:exp_scenario1}), le système réagit plutôt comme un système du second ordre.
+Dans ce scénario, tout comme dans le précédent (\ref{fig:exp_scenario1}), le système réagit plutôt comme un système du second ordre.
 \\Toutefois, à la différence du scénario précédent, la valeur du $PV$ atteint à peu près au même moment la valeur de consigne ($SP$) que pour la simulation. Ceci est dû au fait
-que la température du capteur n'a pas suffisamment pu redescendre entre les deux scénarios. En effet, la valeur de $PV$ à $t = 0s$ est de $\sim 22\degree C$ ce qui correspond 
+que la température du capteur n'a pas suffisamment pu redescendre entre les deux scénarios. En effet, la valeur de $PV$ à $t = 0\,s$ est de $\sim 22\degree C$ ce qui correspond 
 à $4\degree C$ de plus que pour le scénario précédent. 
 \\Mis à part ce détail, le système a bien répondu à la perturbation. L'utilisation du FeedForward a permis de neutraliser complètement l'effet du step de $10\%$ sur $DV$.
 
@@ -110,8 +110,8 @@ pour la simulation. Pour finir, après la perturbation, on observe bien une dimi
 
 \subsection{Scénario 4}
 
-Pour ce scénario, nous avons décidé de répéter l'expérience en changeant la valeur du gamma suite à l'observation de son impact sur les données expérimentales.
-Cet impact n'est cependant pas visible sur la simulation.
+Pour ce scénario, nous avons décidé de répéter l'expérience en changeant la valeur du gamma suite à l'observation de son impact conséquent sur les données expérimentales.
+Cet impact n'est cependant pas autant visible sur la simulation.
 
 \subsubsection{$\gamma = 0.5$}
 
@@ -128,7 +128,7 @@ Cet impact n'est cependant pas visible sur la simulation.
 	\label{fig:sim_scenario5_0.5}
 \end{figure}
 
-Premièrement, la valeur de $PV$ à $t = 0s$ étant plus élevée que pour tous les scénarios précédents, on observe une convergence de $PV$ vers la valeur de consigne 
+Premièrement, la valeur de $PV$ à $t = 0\,s$ étant plus élevée que pour tous les scénarios précédents, on observe une convergence de $PV$ vers la valeur de consigne 
 plus rapide. Le système présente également un comportement plus proche d'un système du $1^{er}$ ordre. 
 \\Par ailleurs, contrairement à ce qui est observé dans la simulation, l'expérience montre un dépassement (overshoot) de la température.
 La forme de la courbe de l'expérience diffère beaucoup de celle de la simulation. Cela n'est pas dû à la valeur de gamma puisque l'overshoot aurait alors été également visible dans la simulation. 
@@ -151,12 +151,12 @@ scénario suivant, suggèrent que cet overshoot pourrait résulter d'une erreur 
 	\label{fig:sim_scenario5_0.7}
 \end{figure}
 
-Pour cette dernière expérience, on observe des résultats beaucoup plus cohérents pr rapport à la simulation. Le système réel prend plus de temps à converger
+Pour cette dernière expérience, on observe des résultats beaucoup plus cohérents par rapport à la simulation. Le système réel prend plus de temps à converger
 vers la consigne ce qui est dû à la valeur initiale de $PV$ comme discuté précédemment. L'overshoot observé dans le scénario précédent n'est plus présent.
-L'augmentation de $\gamma$ peut y avoir contribué puisque cela a comme effet de diminuer ``l'agressivité'' du régulateur en diminuant la constante de gain $K_c$ de celui-ci.
+L'augmentation de $\gamma$ peut y avoir contribué puisque cela a comme effet de diminuer ``l'agressivité'' du régulateur en diminuant la constante de gain $K_C$ de celui-ci.
 \\Le régulateur PID réagit correctement au changement de consigne et atteint la nouvelle valeur presque en même temps que pour la simulation. 
 On peut justement observer l'influence du gamma en comparant ce changement de consigne avec celui où $\gamma = 0.5$ (\ref{fig:exp_scenario5_0.5}). En effet,
-la courbe de $PV$ est plus progressive pour $\gamma = 0.7$ que pour $\gamma = 0.5$. Ceci est dû à la diminution de $K_c$ : 
+la courbe de $PV$ est plus progressive pour $\gamma = 0.7$ que pour $\gamma = 0.5$. Ceci est dû à la diminution de $K_C$ : 
 \[T_{CLP} = \gamma\cdot T_{1P}\]
 \[\Rightarrow K_c = \frac{1}{K}\,\frac{T_{1P}+T_{2P}}{T_{CLP}+\theta}\]
 Et cette diminution de $K_c$ a pour effet de diminuer la valeur de $MV$ à chaque itération du régulateur PID et donc de rendre la réponse du système plus lente.
