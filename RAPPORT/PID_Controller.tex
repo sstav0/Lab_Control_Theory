@@ -203,7 +203,7 @@ Puis, pour calculer les marges de stabilité, nous devons d'abord calculer la fo
 \end{python*}
 et :
 \begin{equation}\label{eq:Cs}
-    C(s)=K_c(1+\frac{1}{T_Is}+\frac{T_Ds}{T_{FD}s +1})
+    C(s)=K_c\left(1+\frac{1}{T_Is}+\frac{T_Ds}{T_{FD}s +1}\right)
 \end{equation}
 \begin{python*}
     # Controller transfer function
@@ -211,7 +211,7 @@ et :
 \end{python*}
 
 \subsubsection{Marge de gain}
-La marge de gain mesure la différence avec $0\,dB$ (en linéaire) lorsque $arg[L(j\omega)] = -180\degree$ à la vitesse radiale $\omega_u$ (utlimate frequency).
+La marge de gain mesure la différence avec $0\,dB$ lorsque $arg[L(j\omega)] = -180\degree$ à la vitesse radiale $\omega_u$ (utlimate frequency).
 La marge se trouve alors avec :
 \[A_m = \frac{1}{|L(j\omega_u)|}\]
 \begin{python*}
@@ -265,7 +265,7 @@ Enfin, les diagrammes de bode réalisés à partir du code ci-dessus permettent 
     Gain margin GM = 18.87234 dB at 0.08 rad/s
     Phase margin PM = 79.76042° at 0.01 rad/s
     \end{python*}
-    Nous remarquons que $\alpha$ n'a peu (voire pas) d'effet sur les marges de stabilité. Ceci est dû au fait que $\alpha$ n'a d'influence que sur $T_{FD}$ qui est presque négligeable
+    Nous remarquons que $\alpha$ n'a pas (voire peu) d'effet sur les marges de stabilité. Ceci est dû au fait que $\alpha$ n'a d'influence que sur $T_{FD}$ qui est presque négligeable
     par rapport à $1$ dans $\frac{T_Ds+1}{T_{FD}s+1}$ (Voir \ref{eq:Cs}) en basses fréquences puisqu'il est multiplié par $s$.\\\\\\
     \item En faisant varier $\gamma$ :
     \begin{figure}[H]

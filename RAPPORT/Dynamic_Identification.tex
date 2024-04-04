@@ -1,6 +1,6 @@
 \section{Identification de la Dynamique}
 
-Pour que ce qui va être présenté par la suite ait du sens, il est nécéssaire de savoir dans quelles conditions nous travaillons.\\
+Pour que ce qui va être présenté par la suite ait du sens, il est nécessaire de savoir dans quelles conditions nous travaillons.\\
 Nos réponses sont basées sur un point de fonctionnement de $MV_0 = 50\%$, $DV_0 = 50\%$ et une sortie $PV_0 = 49.3^{\circ}$C. 
 C'est à dire que la température obtenue sur $PV$ lorsqu'une puissance de chauffe de 50\% est appliquée sur les 2 chauffages est de 49.3°C en régime établi.
 
@@ -13,33 +13,8 @@ Appliquons un step $X(s) = \frac{1}{s}$ autour du point de fonctionnement (de 30
     \caption{Réponse à un step sur MV}
     \label{fig:MV_step_response}
 \end{figure}
-\begin{enumerate}
-    \item Le graphique (Figure \ref{fig:MV_step_response}) obtenu permet (presque) d'affirmer que le processus est un système du $1^{e}$ ordre avec un délai. L'allure de la "step response" est donc $y(t) = K_p (1-e^{-t/T})u(t)$.
 
-    \item Le but est maintenant d'obtenir les paramètres de la fonction de transfert du processus $P(s)$ ce qui permettra de prédire $Y(s)$ pour n'importe quel $X(s)$ puisque $Y(s) = P(s) \cdot X(s)$ ou $PV = P(s)\cdot MV$. 
-    \\Pour se faire, on utilise une fonction de minimisation d'erreur : 
-    \begin{python*}
-        minimize(FOPDT_cost,
-            p0,args=(MVm,PVm,Ts,
-            (fig,ax1,l1,l2)), 
-            method='Powell',
-            bounds=bnds,
-            options={'maxiter': maxIter})
-    \end{python*}
-
-    Où \texttt{p0} contient les points de départ d'optimisation pour les paramètres \texttt{Kp, T} et \texttt{theta}. La fonction de minimisation va faire varier ces paramètres afin que la fonction de coût, \texttt{FOPDT\_cost}, renvoie la valeur la plus basse possible. 
-    \\ \texttt{FOPDT\_cost} : 
-
-    \begin{python*}
-        for i in range(0,len(MV)):
-            t.append(i*Ts) #calcule le temps correspondant au point actuel                  de la donnée en se basant sur la période de sample
-            MVTemp.append(MV[i]) #itère sur la longueur du vecteur d'entrée
-
-            Delay_RT(MVTemp,theta,Ts,MVDelay) #application d'un délai à MV  
-            FO_RT(MVDelay,Kp,T,Ts,PVSim) #On applique un délai au premier ordre via le délai appliqué à MV puis on calcule un point du vecteur de sortie à chaque itération 
-            objective = objective + (PV[i] - PVSim[i])**2 #on ajoute le carré de l'erreur actuel à la somme des carré des erreurs précédentes   
-    \end{python*}
-\end{enumerate}
+Le graphique (Figure \ref{fig:MV_step_response}) obtenu permet (presque) d'affirmer que le processus est un système du $1^{e}$ ordre avec un délai. L'allure de la "step response" est donc $y(t) = K_p (1-e^{-t/T})u(t)$.
 
 Le fichier \texttt{Identification.ipynb} permet de trouver les valeurs estimées de $K_P$, $T_1p$, $T_2p$ et $\theta_p$ qui vont par après nous servir à modéliser le Processus et la Perturbation de façon optimale, ainsi que les différentes méthodes d'approximations des modèles du $1^{e}$ et $2^{e}$ ordre.\\
 Pour notre réponse du Processus, nous obtenons les valeurs suivantes pour un modèle du $2^{e}$ ordre :
@@ -161,7 +136,7 @@ La Figure \ref{fig:MV_approximation_comparison_time} montre les différentes ré
 Elles représentent toutes bien une réponse du $1^{e}$ ordre avec délai, et restent assez proches les unes des autres.
 Les modèles commencent tous avec un délai similaire et terminent en régime établi à environ le même gain statique $K_P$.\\
 Cependant, on distingue tout de même les modèles avec paramètres optimaux des modèles graphiques.
-Les paramètres optimaux ont étés trouvés par un algorithme de minimisation de l'erreur, tandis que les paramètres graphiques ont étés trouvés par une méthode graphique dont la précision est à prendre avec recul.
+Les paramètres optimaux ont été trouvés par un algorithme de minimisation de l'erreur, tandis que les paramètres graphiques ont étés trouvés par une méthode graphique dont la précision est à prendre avec recul.
 \par
 La Figure \ref{fig:MV_approximation_comparison_frequency} nous permet ensuite de comparer les réponses fréquentielles des différents modèles.
 La première observation est que tous les modèles sont pratiquement supperposés en terme de gain.
@@ -199,7 +174,7 @@ Et les valeurs suivantes pour un modèle du $1^{er}$ ordre :
     T_{d} &= 184.880 \,s \\
     \theta_d &= 40.136 \,s
 \end{align*}
-Les valeures obtenues pour $T_{1d}$ et $T_{2d}$ nous permettent de confirmer que la perturbation peut se comporter comme un système du $2^{e}$ ordre.
+Les valeurs obtenues pour $T_{1d}$ et $T_{2d}$ nous permettent de confirmer que la perturbation peut se comporter comme un système du $2^{e}$ ordre.
 
 \subsubsection{Comparaison des modèles avec paramètres optimaux}
 

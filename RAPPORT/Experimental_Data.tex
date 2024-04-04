@@ -60,8 +60,8 @@ tous les cas de figure :
 \end{figure}
 
 On peut observer que le $PV$ n'a pas atteint la valeur de consigne ($SP$) avant le step de $10\%$ sur $DV$. Cela est dû au fait que, pour l'expérience,
-la valeur du $PV$ à $t = 0s$ est de $\sim 18\degree C$ tandis que pour la simulation, il est de $\sim 34\degree C$. Néanmoins, une fois le step de $10\%$ sur $DV$ effectué,
-la valeur du $PV$ converge jusqu'à la valeur de consigne et la dépasse à $t = 1500s$ ce qui correspond à un retard par rapport à la simulation $\sim \Delta t = 75s$. 
+la valeur du $PV$ à $t = 0\,s$ est de $\sim 18\degree C$ tandis que pour la simulation, il est de $\sim 34\degree C$. Néanmoins, une fois le step de $10\%$ sur $DV$ effectué,
+la valeur du $PV$ converge jusqu'à la valeur de consigne et la dépasse à $t = 1500\,s$ ce qui correspond à un retard par rapport à la simulation $\sim \Delta t = 75\,s$. 
 \\Une autre observation importante concerne la forme de la courbe $PV$ qui suggère un comportement typique d'un système du second ordre. Cependant, l'analyse des dynamiques du système 
 lors du $1^{er}$ laboratoire avait révélé une seconde constante de temps très faible, $T_{2p} \sim 10^{-12}$. $T_{2p}$ étant négligeable, nous avions conclu que notre système se comportait
 plutôt comme un système du premier ordre en réponse à un changement sur $MV$. Selon nous, une des causes de ce changement de forme de courbe serait la température plus basse de la pièce qui affecterait 
@@ -104,7 +104,7 @@ que la température du capteur n'a pas suffisamment pu redescendre entre les deu
 	\label{fig:sim_scenario3}
 \end{figure}
 
-Comme pour le $1^{er}$ scénario (\ref{fig:exp_scenario1}), la valeur du $PV$ pour $t = 0s$ est de $\sim 17\degree C$ ce qui cause un retard, par rapport à la simulation, dans l'atteinte de la valeur
+Comme pour le $1^{er}$ scénario (\ref{fig:exp_scenario1}), la valeur du $PV$ pour $t = 0\,s$ est de $\sim 17\degree C$ ce qui cause un retard, par rapport à la simulation, dans l'atteinte de la valeur
 de consigne. Ensuite, on observe que le régulateur PID réagit correctement au step de $-10\%$ et atteint la nouvelle valeur de consigne presque en même temps que
 pour la simulation. Pour finir, après la perturbation, on observe bien une diminution de $MV$ afin de faire revenir $PV$ à la valeur de consigne. 
 
