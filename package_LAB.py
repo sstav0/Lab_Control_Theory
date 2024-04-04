@@ -8,6 +8,11 @@ import threading
 import matplotlib.pyplot as plt
 from package_DBR import Process, SelectPath_RT, Delay_RT, FO_RT
 
+#plotly imports
+from plotly.subplots import make_subplots
+import plotly.graph_objs as go
+from ipywidgets import interactive, VBox, IntRangeSlider, IntSlider, Checkbox, FloatSlider, Label, Layout, Button, FloatRangeSlider
+
 #----------------------------------#
 
 def LL_RT(MV, Kp, TLead, TLag, Ts, PV, PVInit=0, method='EBD'):
@@ -308,14 +313,6 @@ def install_and_import(package):
         
 #----------------------------------#
 
-#plotly imports
-install_and_import('plotly')
-install_and_import('plotly')
-install_and_import('ipywidgets')
-from plotly.subplots import make_subplots
-import plotly.graph_objs as go
-from ipywidgets import interactive, VBox, IntRangeSlider, IntSlider, Checkbox, FloatSlider, Label, Layout, Button, FloatRangeSlider
-
 class ExperimentControl : 
     """
     This class creates a GUI for the real-time simulation or hardware operation of a process with a PID controller.
@@ -393,6 +390,7 @@ class ExperimentControl :
         self.ManFFBuffer = False
         self.TCLabStatus = False
         self.should_continue = True
+    
     
     def initialize(self):
         self.fig = go.FigureWidget(make_subplots(rows=4, cols=1, specs = [[{}], [{}], [{}], [{}]], vertical_spacing = 0.15, row_heights=[0.07, 0.43, 0.43, 0.07], subplot_titles=("Manual Mode", "MV and Components", "PV, SP and E", "Perturbation DV")))
