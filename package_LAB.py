@@ -464,7 +464,6 @@ class ExperimentControl :
             self.reinitialize()
             
             for i in range(0, self.N): 
-                
                 if not self.should_continue:
                     break
                   
@@ -573,7 +572,7 @@ class ExperimentControl :
         self.alphaBuffer = alphaP
         
     def Update_Manual(self, manual_time, MVManual, Man):        
-        self.ManPathBuffer = {0: False, Man: True}
+        self.ManPathBuffer = {0: True, Man: False}
         self.MVManPathBuffer = {0: 0, manual_time[0]: MVManual[0], manual_time[1]: MVManual[1]}
 
 
@@ -606,7 +605,9 @@ class ExperimentControl :
         
     def clear_graph_button_clicked(self, b):
         # Clear the graph by resetting its data
-        self.fig.data = []
+        with self.fig.batch_update():
+            for trace in self.fig.data:
+                trace.x, trace.y = [], []
         
     def Update_FF(self, change):
         self.FFBuffer = change.new
@@ -658,7 +659,7 @@ class ExperimentControl :
 
         # Create sliders
         self.manualTimeIntervalSlider = IntRangeSlider(min=0, max=self.TSim, step=1, value=[0, 500], description="Manual Time Interval", style=self.slider_style, layout=self.slider_layout)
-        self.manualActivationTimeSlider = IntSlider(min=0, max=self.TSim, step=1, value=500, description="Manual Activation Time (3000 to desactivate)", style=self.slider_style, layout=self.slider_layout)
+        self.manualActivationTimeSlider = IntSlider(min=0, max=self.TSim, step=1, value=500, description="Manual Desactivation Time", style=self.slider_style, layout=self.slider_layout)
         self.manualControlValueSlider = IntRangeSlider(min=0, max=100, step=1, value=[self.MV0+15, self.MV0+15], description="Manual Control Value", style=self.slider_style, layout=self.slider_layout)
         self.perturbationValueSlider = IntRangeSlider(min=0, max=100, step=1, value=[self.DV0, self.DV0+10], description="Perturbation Value", style=self.slider_style, layout=self.slider_layout)
         self.perturbationTimeIntervalSlider = IntRangeSlider(min=0, max=self.TSim, step=10, value=[0, 1600], description="Perturbation Time Interval", style=self.slider_style, layout=self.slider_layout)
