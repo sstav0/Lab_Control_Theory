@@ -156,8 +156,5 @@ vers la consigne ce qui est dû à la valeur initiale de $PV$ comme discuté pr�
 L'augmentation de $\gamma$ peut y avoir contribué puisque cela a comme effet de diminuer ``l'agressivité'' du régulateur en diminuant la constante de gain $K_C$ de celui-ci.
 \\Le régulateur PID réagit correctement au changement de consigne et atteint la nouvelle valeur presque en même temps que pour la simulation. 
 On peut justement observer l'influence du gamma en comparant ce changement de consigne avec celui où $\gamma = 0.5$ (\ref{fig:exp_scenario5_0.5}). En effet,
-la courbe de $PV$ est plus progressive pour $\gamma = 0.7$ que pour $\gamma = 0.5$. Ceci est dû à la diminution de $K_C$ : 
-\[T_{CLP} = \gamma\cdot T_{1P}\]
-\[\Rightarrow K_c = \frac{1}{K}\,\frac{T_{1P}+T_{2P}}{T_{CLP}+\theta}\]
-Et cette diminution de $K_c$ a pour effet de diminuer la valeur de $MV$ à chaque itération du régulateur PID et donc de rendre la réponse du système plus lente.
+la courbe de $PV$ est plus progressive pour $\gamma = 0.7$ que pour $\gamma = 0.5$ (voir \ref{ssec:Kc_Influence_PID}).
 Pour terminer, le régulateur réagit correctement à la perturbation causée par le step de $10\%$ sur $DV$ puisque, comme pour la simulation, $PV$ reste constant.
