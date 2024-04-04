@@ -8,11 +8,6 @@ import threading
 import matplotlib.pyplot as plt
 from package_DBR import Process, SelectPath_RT, Delay_RT, FO_RT
 
-#plotly imports
-from plotly.subplots import make_subplots
-import plotly.graph_objs as go
-from ipywidgets import interactive, VBox, IntRangeSlider, IntSlider, Checkbox, FloatSlider, Label, Layout, Button, FloatRangeSlider
-
 #----------------------------------#
 
 def LL_RT(MV, Kp, TLead, TLag, Ts, PV, PVInit=0, method='EBD'):
@@ -390,9 +385,15 @@ class ExperimentControl :
         self.ManFFBuffer = False
         self.TCLabStatus = False
         self.should_continue = True
+        
+
     
     
     def initialize(self):
+        #plotly imports
+        import plotly.graph_objects as go
+        from plotly.subplots import make_subplots
+        
         self.fig = go.FigureWidget(make_subplots(rows=4, cols=1, specs = [[{}], [{}], [{}], [{}]], vertical_spacing = 0.15, row_heights=[0.07, 0.43, 0.43, 0.07], subplot_titles=("Manual Mode", "MV and Components", "PV, SP and E", "Perturbation DV")))
         self.fig.add_trace(go.Scatter(name="SP"), row=3, col=1)
         self.fig.add_trace(go.Scatter(name="PV"), row=3, col=1)
@@ -616,6 +617,9 @@ class ExperimentControl :
         self.ManFFBuffer = change.new
         
     def create_button(self, description, button_style, icon):
+        #plotly imports
+        from ipywidgets import Button
+        
         return Button(
             description=description,
             button_style=button_style, 
@@ -636,6 +640,9 @@ class ExperimentControl :
                 self.simulationTimePerLoopSlider.value = 0
                 
     def createWidgetsStyle(self):
+        #plotly imports
+        from ipywidgets import Layout
+        
         # Define common styles for sliders and buttons
         self.slider_layout = Layout(width='500px')
         self.slider_style = {'description_width': 'initial'}
@@ -647,6 +654,9 @@ class ExperimentControl :
         }
     
     def createWidgets(self):
+        #plotly imports
+        from ipywidgets import interactive, IntRangeSlider, IntSlider, FloatRangeSlider, FloatSlider, Checkbox
+        
         self.createWidgetsStyle()
         # Creating buttons with the defined function
         self.run_exp_button = self.create_button(*self.button_style_mappings['run'])
@@ -697,6 +707,9 @@ class ExperimentControl :
         
         
     def createPlot(self):
+        #plotly imports
+        from ipywidgets import VBox, Layout, Label
+        
         self.initialize()
         self.createWidgets()
         # Adding labels for sections
