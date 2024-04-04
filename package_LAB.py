@@ -233,7 +233,7 @@ def Margins(P: Process, C: Controller, omega, show=True) :
     if phase_crossing_idx > 0:
         ultimate_freq = omega[phase_crossing_idx]
         GM = 20*np.log10(1 / np.abs(Ls[phase_crossing_idx]))
-        print(f"Gain margin GM = {GM:.2f} dB at {ultimate_freq:.2f} rad/s")
+        print(f"Gain margin GM = {GM:.5f} dB at {ultimate_freq:.2f} rad/s")
     else:
         print(">> Index for which arg(Ls) = -180° not found")
     
@@ -244,7 +244,7 @@ def Margins(P: Process, C: Controller, omega, show=True) :
     if gain_crossing_idx > 0:
         crossover_freq = omega[gain_crossing_idx]
         PM = 180 + np.angle(Ls[gain_crossing_idx], deg=True)
-        print(f"Phase margin PM = {PM:.2f}° at {crossover_freq:.2f} rad/s")
+        print(f"Phase margin PM = {PM:.5f}° at {crossover_freq:.2f} rad/s")
     else:
         print(">> Index for which |Ls| = 1 not found")
         

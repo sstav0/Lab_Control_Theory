@@ -156,6 +156,146 @@ Le dérivateur est enfait $MV_D = T_D s$ qui est impropre, puisqu'à hautes fré
 \end{align*}
 Nous voyons sur la Figure \ref{fig:Alpha_Influence_PID} que le pic est effectivement plus grand pour un $\alpha$ plus petit, et vice-versa.
 
+\subsection{Marges de stabilité}
+\subsubsection{Contexte}
+Les marges de stabilité sont des indicateurs de la stabilité du système. 
+Illustrons ce concept en se référant à une partie du schéma d'un régulateur PID en boucle fermée : 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.4\textwidth]{figures/unityfeedback.png}
+    \caption{Fonction de transfert en boucle fermée}
+    \label{fig:unityfeedback}
+\end{figure}
+\\Toutes les fonctions de transfert du système sont divisées par $1+PC$, ce qui pose problème lorsque $1+PC = 0$.
+Sachant que la fonction de transfert en boucle fermée est donnée par $L(s) = P(s)\cdot C(s)$, le système devient instable lorsque : 
+\begin{itemize}
+    \item $|L(j\omega)| = 1$
+    \item $\angle L(j\omega) = -180\degree$
+\end{itemize}
+Les marges de stabilité permettent donc de mesurer la distance avec ce point critique $(|L(j\omega)|,\, \angle L = -180\degree)$. 
+\subsubsection{Code}
+On commence par définir s : 
+\begin{python*}
+    s = 1j*omega
+\end{python*}
+Avec : 
+\begin{python*}
+    omega = np.logspace(-4, 2, 1000)
+\end{python*}
+Puis, pour calculer les marges de stabilité, nous devons d'abord calculer la fonction de transfert en boucle fermée $L(s) = P(s)\cdot C(s)$ où :
+\begin{equation}
+    P(s) = K_p\,\frac{(T_{Lead1}s +1)(T_{Lead2}s +1)}{(T_{Lag1}s +1)(T_{Lag2}s +1)}\,e^{-\theta s}
+\end{equation}
+\begin{python*}
+    # Process transfer function
+    Ptheta = np.exp(-P.parameters['theta']*s)
+    PGain = P.parameters['Kp']*np.ones_like(Ptheta)
+    PLag1 = 1/(P.parameters['Tlag1']*s + 1)
+    PLag2 = 1/(P.parameters['Tlag2']*s + 1)
+    PLead1 = P.parameters['Tlead1']*s + 1
+    PLead2 = P.parameters['Tlead2']*s + 1
+
+    Ps = np.multiply(Ptheta,PGain)
+    Ps = np.multiply(Ps,PLag1)
+    Ps = np.multiply(Ps,PLag2)
+    Ps = np.multiply(Ps,PLead1)
+    Ps = np.multiply(Ps,PLead2)
+\end{python*}
+et :
+\begin{equation}\label{eq:Cs}
+    C(s)=K_c(1+\frac{1}{T_Is}+\frac{T_Ds}{T_{FD}s +1})
+\end{equation}
+\begin{python*}
+    # Controller transfer function
+    Cs = C.parameters['Kc'] * (1 + 1/(C.parameters['Ti']*s) + C.parameters['Td']*s/(1 + C.parameters['Tfd']*s))
+\end{python*}
+
+\subsubsection{Marge de gain}
+La marge de gain mesure la différence avec $0\,dB$ (en linéaire) lorsque $arg[L(j\omega)] = -180\degree$ à la vitesse radiale $\omega_u$ (utlimate frequency).
+La marge se trouve alors avec :
+\[A_m = \frac{1}{|L(j\omega_u)|}\]
+\begin{python*}
+    phase_crossing_idx = np.argmin(np.abs(np.angle(Ls, deg=True) - -180)) # Find the nearest point with an angle of -180°
+    if phase_crossing_idx > 0:
+        ultimate_freq = omega[phase_crossing_idx] # Ultimate frequency w_u 
+        GM = 20*np.log10(1 / np.abs(Ls[phase_crossing_idx])) # Gain margin GM
+        print(f"Gain margin GM = {GM:.2f} dB at {ultimate_freq:.2f} rad/s")
+    else:
+        print(">> Index for which arg(Ls) = -180° not found")
+\end{python*}
+
+\subsubsection{Marge de phase}
+La marge de phase évalue la différence de phase avec $-180\degree$ lorsque $|L(j\omega)| = 1$, à la vitesse radiale $\omega_c$ (phase crossover frequency).
+La marge de phase se calcule par :
+\[P_m = 180\degree + arg[L(j\omega_c)]\]
+\begin{python*}
+    gain_crossing_idx = np.argmin(np.abs(np.abs(Ls) - 1)) # Find the nearest point with a gain of 1
+    if gain_crossing_idx > 0:
+        crossover_freq = omega[gain_crossing_idx] # Crossover frequency w_c
+        PM = 180 + np.angle(Ls[gain_crossing_idx], deg=True) # Phase margin PM
+        print(f"Phase margin PM = {PM:.2f}° at {crossover_freq:.2f} rad/s")
+    else:
+        print(">> Index for which |Ls| = 1 not found")
+\end{python*}
+
+\subsubsection{Diagramme de Bode}
+Enfin, les diagrammes de bode réalisés à partir du code ci-dessus permettent de visualiser les effets des paramètres $\alpha$ et $\gamma$ sur les marges de stabilité.
+\begin{enumerate}
+    \item En faisant varier $\alpha$ : 
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}[b]{0.48\textwidth}
+            \includegraphics[width=\textwidth]{figures/marginsalpha1.png}
+            \caption{$\alpha=1,\, \gamma = 0.5$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.48\textwidth}
+            \includegraphics[width=\textwidth]{figures/marginsalpha02.png}
+            \caption{$\alpha = 0.2,\, \gamma = 0.5$}
+        \end{subfigure}
+        \caption{Influence de $\alpha$ sur les marges de stabilité}
+        \label{fig:MarginsAlpha}
+    \end{figure}
+    $\alpha = 0.2$ :
+    \begin{python*}
+    Gain margin GM = 18.87234 dB at 0.08 rad/s
+    Phase margin PM = 79.76042° at 0.01 rad/s
+    \end{python*}
+    $\alpha = 1$ :
+    \begin{python*}
+    Gain margin GM = 18.87234 dB at 0.08 rad/s
+    Phase margin PM = 79.76042° at 0.01 rad/s
+    \end{python*}
+    Nous remarquons que $\alpha$ n'a peu (voire pas) sur les marges de stabilité. Ceci est dû au fait que $\alpha$ n'a d'influence que sur $T_{FD}$ qui est presque négligeable
+    par rapport à $1$ dans $\frac{T_Ds+1}{T_{FD}s+1}$ (Voir \ref{eq:Cs}) en basses fréquences puisqu'il est multiplié par $s$.\\\\\\
+    \item En faisant varier $\gamma$ :
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}[b]{0.48\textwidth}
+            \includegraphics[width=\textwidth]{figures/marginsgamma03.png}
+            \caption{$\alpha=1,\, \gamma = 0.3$}
+        \end{subfigure}
+        \begin{subfigure}[b]{0.48\textwidth}
+            \includegraphics[width=\textwidth]{figures/marginsgamma07.png}
+            \caption{$\alpha = 0.2,\, \gamma = 0.7$}
+        \end{subfigure}
+        \caption{Influence de $\gamma$ sur les marges de stabilité}
+        \label{fig:MarginsAlpha}
+    \end{figure}
+    $\gamma = 0.3$ :
+    \begin{python*}
+    Gain margin GM = 15.41 dB at 0.08 rad/s
+    Phase margin PM = 74.73° at 0.01 rad/s   
+    \end{python*}
+    $\gamma = 0.7$ :
+    \begin{python*}
+    Gain margin GM = 21.34 dB at 0.08 rad/s
+    Phase margin PM = 82.29° at 0.01 rad/s
+    \end{python*}
+    Nous remarquons que $\gamma$ modifie significativement les marges de stabilité. En effet, $\gamma$ agit directement sur le gain $K_C$ du régulateur PID (voir \ref{ssec:Kc_Influence_PID})
+    Cependant $\gamma$ n'a pas d'influence sur le déphasage de $L(s)$ puisque $\omega_u$ et $\omega_c$ restent les mêmes.
+\end{enumerate}
+
+
 \subsection{FeedForward}
 
 \begin{figure}[h]
